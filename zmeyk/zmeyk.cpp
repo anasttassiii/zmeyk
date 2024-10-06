@@ -121,7 +121,62 @@ int check_collision_snake(Snake* snake) {
     }
     return 0;
 }
-int main()
-{
-    
+int main() {
+    // Инициализация настроек игры
+    GameSettings settings;
+    settings.snake_speed = 100;
+    settings.field_width = 20;
+    settings.field_height = 15;
+
+    // Инициализация игрового поля
+    GameField field;
+    field.width = settings.field_width;
+    field.height = settings.field_height;
+    field.score = 0;
+
+    // Инициализация змеи
+    Snake snake;
+    init_snake(&snake, 3, RIGHT);
+
+    // Инициализация еды
+    Food food;
+    init_food(&food, &field);
+
+    // Инициализация состояния игры
+    GameState state;
+    state.game_running = 1;
+    state.game_over = 0;
+
+    // Игровой цикл
+    while (state.game_running) {
+        // Обработка нажатия клавиш
+
+        // Обновление состояния змеи
+        if (check_collision_food(&snake, &food)) {
+            field.score++;
+            init_food(&food, &field);
+            update_snake(&snake, &field, directions[snake.direction]);
+        }
+        else {
+            update_snake(&snake, &field, directions[snake.direction]);
+        }
+
+        // Проверка столкновений
+        if (check_collision_border(&snake, &field) || check_collision_snake(&snake)) {
+            state.game_over = 1;
+            state.game_running = 0;
+        }
+
+        // Вывод игрового поля
+    }
+
+    // Очистка памяти
+    free(snake.body);
+
+    // Вывод финального сообщения
+    if (state.game_over) {
+        printf("Игра окончена! Ваш счет: %d\n", field.score);
+    }
+
+    return 0;
 }
