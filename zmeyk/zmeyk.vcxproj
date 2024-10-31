@@ -127,7 +127,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="field.cpp" />
+    <ClCompile Include="food.cpp" />
+    <ClCompile Include="game.cpp" />
+    <ClCompile Include="random.cpp" />
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="zmeyk.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="field.h" />
+    <ClInclude Include="food.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="Header.h" />
+    <ClInclude Include="random.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
