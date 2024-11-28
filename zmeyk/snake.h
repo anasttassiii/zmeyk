@@ -1,58 +1,99 @@
-#pragma once
+п»ї#pragma once
 #include <iostream>
-#include <vector>
 #include <ctime>
+#include <vector>
 #include <string>
 
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
+
+class Score {
+private:
+    int score;
+public:
+    Score() : score(0) {}
+
+    void addScore(int value) {
+        score += value;
+    }
+
+    int getScore() const {
+        return score;
+    }
+
+    // РџРµСЂРµРіСЂСѓР·РєР° РѕРїРµСЂР°С‚РѕСЂР° +
+    Score operator+(const Score& other) const {
+        Score temp;
+        temp.score = this->score + other.score;
+        return temp;
+    }
+
+    // РџСЂРµС„РёРєСЃРЅС‹Р№ РѕРїРµСЂР°С‚РѕСЂ ++
+    Score& operator++() {
+        this->score++;
+        return *this;
+    }
+
+    // РџРѕСЃС‚С„РёРєСЃРЅС‹Р№ РѕРїРµСЂР°С‚РѕСЂ ++
+    Score operator++(int) {
+        Score temp = *this;
+        ++(*this);
+        return temp;
+    }
+};
 
 class Snake {
 protected:
     int width;
     int height;
-    std::vector<int> tailX;  // Замена массива на вектор
-    std::vector<int> tailY;  // Замена массива на вектор
-    static int nTail; // длина хвоста
+    int tailX[100], tailY[100]; // Р’ РјР°СЃСЃРёРІР°С… С…СЂР°РЅСЏС‚СЃСЏ РєРѕРѕСЂРґРёРЅР°С‚С‹ С…РІРѕСЃС‚Р° Р·РјРµР№РєРё
+    int nTail;
 
 public:
-    Snake() { // конструктор, задающий начальные значения змейки
+    Snake() // РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ, Р·Р°РґР°СЋС‰РёР№ РЅР°С‡Р°Р»СЊРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ Р·РјРµР№РєРё 
+    {
         this->width = 20;
         this->height = 15;
+        nTail = 0;
     }
-    friend int getTailLength(const Snake& s); // Дружественная функция
-    static int plusnTail() { return ++nTail; }
-
-    static int* getnTailPtr() { return &nTail; }
-
-    static int& getnTailRef() { return nTail; }
 };
 
 class Game : public Snake {
 public:
     eDirection dir;
-    bool gameover;
-    int xHead, yHead, fruitX, fruitY, score; // координаты головы змейки, положения фрукта
+    Score score;
+    bool gameover, gameset;
+    int xHead, yHead, fruitX, fruitY;
+    static int gameCount;
 
-    Game() : Snake() { // конструктор, задающий начальное положение игры
+    Game() : Snake() {
         srand(time(NULL));
+        gameCount++;
         gameover = false;
+        gameset = false;
         dir = STOP;
-        xHead = (this->width / 2) - 1; // Использование this для доступа к члену класса
+        xHead = (this->width / 2) - 1; // РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ this РґР»СЏ РґРѕСЃС‚СѓРїР° Рє С‡Р»РµРЅСѓ РєР»Р°СЃСЃР°
         yHead = (this->height / 2) - 1;
         fruitX = rand() % (this->width - 1);
         fruitY = rand() % this->height;
-        score = 0;
-        tailX.resize(100); // Резервируем место для 100 элементов
-        tailY.resize(100); // Резервируем место для 100 элементов
+        score = Score(); // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РѕР±СЉРµРєС‚Р° Score
     }
 
-    void Draw(); // рисуем поле
-    void Input(); // получаем входные данные
-    void Logic(); // реализуем логику игры
-    void Draw_horizontal_borders(); // рисуем горизонтальные стенки
-    bool Draw_vertical_borders(int, int); // рисуем вертикальные стенки
-    bool Draw_head_of_snake(int, int); // рисуем голову змейки
-    bool Draw_Fruite(int, int); // рисуем фрукт
+
+    static int getGameCount() {
+        return gameCount;
+    }
+
+    Score& getScoreRef();
+    int getScorePointer() const;
+    friend std::ostream& operator<<(std::ostream& os, const Game& game);
+
+    void Draw();
+    void Input();
+    void Logic();
+    void Draw_horizontal_borders();
+    bool Draw_vertical_borders(int, int);
+    bool Draw_head_of_snake(int, int);
+    bool Draw_Fruite(int, int);
     void Draw_Snake_tail_or_space(int, int);
     void Tail_step();
     void Change_of_head_position();
