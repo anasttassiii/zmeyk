@@ -87,12 +87,45 @@ void Game::Draw() {
 void Game::Input() {
     if (_kbhit()) {
         switch (_getch()) {
-        case 'a': dir = LEFT; break;
-        case 'd': dir = RIGHT; break;
-        case 'w': dir = UP; break;
-        case 's': dir = DOWN; break;
-        case 'x': gameover = true; break;
-        case 'e': gameset = true; break;
+        case 'a':
+            dir = LEFT;
+            break;
+        case 'd':
+            dir = RIGHT;
+            break;
+        case 'w':
+            dir = UP;
+            break;
+        case 's':
+            dir = DOWN;
+            break;
+        case 'l': {
+            cout << "Choose difficulty (1- easy, 2- hard): ";
+            string level;
+            getline(cin >> ws, level);
+
+            try {
+                if (level == "1") {
+                    cout << "Difficulty set to easy." << endl;
+                }
+                else if (level == "2") {
+                    cout << "Difficulty set to hard." << endl;
+                }
+                else {
+                    throw invalid_argument("Invalid choice. Default difficulty applied.");
+                }
+            }
+            catch (const invalid_argument& e) {
+                cout << e.what() << endl;
+            }
+            break;
+        }
+        case 'x':
+            gameover = true;
+            break;
+        case 'e':
+            gameset = true;
+            break;
         }
     }
 }
@@ -101,10 +134,8 @@ void Game::Tail_step() {
     int prevX = tailX[0];
     int prevY = tailY[0];
     int prev2X, prev2Y;
-
     tailX[0] = xHead;
     tailY[0] = yHead;
-
     for (int i = 1; i < nTail; i++) {
         prev2X = tailX[i];
         prev2Y = tailY[i];
@@ -117,10 +148,22 @@ void Game::Tail_step() {
 
 void Game::Change_of_head_position() {
     switch (dir) {
-    case LEFT: xHead--; break;
-    case RIGHT: xHead++; break;
-    case UP: yHead--; break;
-    case DOWN: yHead++; break;
+    case LEFT: {
+        xHead--;
+        break;
+    }
+    case RIGHT: {
+        xHead++;
+        break;
+    }
+    case UP: {
+        yHead--;
+        break;
+    }
+    case DOWN: {
+        yHead++;
+        break;
+    }
     }
 }
 
@@ -138,12 +181,17 @@ void Game::head_to_tail_check() {
 }
 
 bool Game::Check_Tail_and_Fruit_coincidence() {
-    for (int i = 0; i < nTail; i++) {
+    bool f = true;
+    for (int i = 0; i < nTail && f; i++) {
+        f = false;
         if (tailX[i] == fruitX && tailY[i] == fruitY) {
-            return false; // Если совпадение с хвостом
+            fruitX = rand() % (width - 1);
+            fruitY = rand() % height;
+            f = true;
         }
+        else f = false;
     }
-    return true; // Нет совпадения
+    return f;
 }
 
 void Game::Eating_Fruits() {
@@ -155,7 +203,6 @@ void Game::Eating_Fruits() {
         nTail++;
     }
 }
-
 
 void Game::Logic() {
     Tail_step();

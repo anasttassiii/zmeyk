@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include <iostream>
 #include <ctime>
-#include <vector>
 #include <string>
 
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
