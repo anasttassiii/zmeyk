@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include <iostream>
 #include <ctime>
-#include <string>
 
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
 
@@ -10,33 +9,11 @@ private:
     int score;
 public:
     Score() : score(0) {}
-
     void addScore(int value) {
         score += value;
     }
-
     int getScore() const {
         return score;
-    }
-
-    // Перегрузка оператора +
-    Score operator+(const Score& other) const {
-        Score temp;
-        temp.score = this->score + other.score;
-        return temp;
-    }
-
-    // Префиксный оператор ++
-    Score& operator++() {
-        this->score++;
-        return *this;
-    }
-
-    // Постфиксный оператор ++
-    Score operator++(int) {
-        Score temp = *this;
-        ++(*this);
-        return temp;
     }
 };
 
@@ -48,8 +25,7 @@ protected:
     int nTail;
 
 public:
-    Snake() // Конструктор, задающий начальные значения змейки 
-    {
+    Snake() { // Конструктор, задающий начальные значения змейки 
         this->width = 20;
         this->height = 15;
         nTail = 0;
@@ -61,10 +37,10 @@ public:
     eDirection dir;
     Score score;
     bool gameover, gameset;
-    int xHead, yHead, fruitX, fruitY;
+    int xHead, yHead, fruitX, fruitY; // Координаты головы змейки, положения фрукта
     static int gameCount;
 
-    Game() : Snake() {
+    Game() : Snake() { // Конструктор, задающий начальное положение игры
         srand(time(NULL));
         gameCount++;
         gameover = false;
@@ -77,22 +53,23 @@ public:
         score = Score(); // Инициализация объекта Score
     }
 
-
+    // Статический метод для получения количества игр
     static int getGameCount() {
         return gameCount;
     }
 
-    Score& getScoreRef();
-    int getScorePointer() const;
-    friend std::ostream& operator<<(std::ostream& os, const Game& game);
+    // Метод для получения текущего счета
+    int getScore() const { // Возвращает значение score из объекта score
+        return score.getScore();
+    }
 
-    void Draw();
-    void Input();
-    void Logic();
-    void Draw_horizontal_borders();
-    bool Draw_vertical_borders(int, int);
-    bool Draw_head_of_snake(int, int);
-    bool Draw_Fruite(int, int);
+    void Draw(); // Рисуем поле
+    void Input(); // Получаем входные данные
+    void Logic(); // Реализуем логику игры
+    void Draw_horizontal_borders(); // Рисуем горизонтальные стенки
+    bool Draw_vertical_borders(int, int); // Рисуем вертикальные стенки
+    bool Draw_head_of_snake(int, int); // Рисуем голову змейки
+    bool Draw_Fruite(int, int); // Рисуем фрукт
     void Draw_Snake_tail_or_space(int, int);
     void Tail_step();
     void Change_of_head_position();
