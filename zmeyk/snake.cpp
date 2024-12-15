@@ -23,7 +23,7 @@ int Game::getScorePointer() const {
 }
 
 void Game::Draw_horizontal_borders() {
-    for (int i = 0; i < width + 1; i++) {
+    for (int i = 0; i < width; i++)
         cout << "#";
     }
     cout << endl;
