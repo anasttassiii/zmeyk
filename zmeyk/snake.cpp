@@ -4,26 +4,18 @@
 #include <vector>
 #include <windows.h>
 #include <conio.h>
-
+#include <string> 
 using namespace std;
 
 int Game::gameCount = 0;
 
 std::ostream& operator<<(std::ostream& os, const Game& game) {
-    os << "Score: " << game.getScorePointer() << endl;
+    os << "Score: " << game.getScore() << endl; // Изменено с getScorePointer на getScore
     return os;
 }
 
-Score& Game::getScoreRef() {
-    return score;
-}
-
-int Game::getScorePointer() const {
-    return score.getScore();
-}
-
 void Game::Draw_horizontal_borders() {
-    for (int i = 0; i < width; i++)
+    for (int i = 0; i < width + 1; i++) {
         cout << "#";
     }
     cout << endl;
@@ -53,6 +45,7 @@ bool Game::Draw_Fruite(int y_coordinate, int x_coordinate) {
     return false;
 }
 
+
 void Game::Draw_Snake_tail_or_space(int y_coordinate, int x_coordinate) {
     bool print = false;
     for (int k = 0; k < nTail; k++) {
@@ -69,41 +62,31 @@ void Game::Draw() {
     Draw_horizontal_borders();
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            if (Draw_vertical_borders(i, j));
-            if (Draw_head_of_snake(i, j));
-            else {
-                if (Draw_Fruite(i, j));
-                else {
-                    Draw_Snake_tail_or_space(i, j);
+            if (!Draw_vertical_borders(i, j)) {
+                if (!Draw_head_of_snake(i, j)) {
+                    if (!Draw_Fruite(i, j)) {
+                        Draw_Snake_tail_or_space(i, j);
+                    }
                 }
             }
         }
         cout << endl;
     }
     Draw_horizontal_borders();
-    cout << "Score: " << getScorePointer() << endl;
+    cout << "Score: " << getScore() << endl; // Изменено с getScorePointer на getScore
 }
 
 void Game::Input() {
     if (_kbhit()) {
         switch (_getch()) {
-        case 'a':
-            dir = LEFT;
-            break;
-        case 'd':
-            dir = RIGHT;
-            break;
-        case 'w':
-            dir = UP;
-            break;
-        case 's':
-            dir = DOWN;
-            break;
+        case 'a': dir = LEFT; break;
+        case 'd': dir = RIGHT; break;
+        case 'w': dir = UP; break;
+        case 's': dir = DOWN; break;
         case 'l': {
             cout << "Choose difficulty (1- easy, 2- hard): ";
             string level;
             getline(cin >> ws, level);
-
             try {
                 if (level == "1") {
                     cout << "Difficulty set to easy." << endl;
@@ -120,12 +103,8 @@ void Game::Input() {
             }
             break;
         }
-        case 'x':
-            gameover = true;
-            break;
-        case 'e':
-            gameset = true;
-            break;
+        case 'x': gameover = true; break;
+        case 'e': gameset = true; break;
         }
     }
 }
@@ -148,22 +127,10 @@ void Game::Tail_step() {
 
 void Game::Change_of_head_position() {
     switch (dir) {
-    case LEFT: {
-        xHead--;
-        break;
-    }
-    case RIGHT: {
-        xHead++;
-        break;
-    }
-    case UP: {
-        yHead--;
-        break;
-    }
-    case DOWN: {
-        yHead++;
-        break;
-    }
+    case LEFT: xHead--; break;
+    case RIGHT: xHead++; break;
+    case UP: yHead--; break;
+    case DOWN: yHead++; break;
     }
 }
 
@@ -181,17 +148,12 @@ void Game::head_to_tail_check() {
 }
 
 bool Game::Check_Tail_and_Fruit_coincidence() {
-    bool f = true;
-    for (int i = 0; i < nTail && f; i++) {
-        f = false;
+    for (int i = 0; i < nTail; i++) {
         if (tailX[i] == fruitX && tailY[i] == fruitY) {
-            fruitX = rand() % (width - 1);
-            fruitY = rand() % height;
-            f = true;
+            return true;
         }
-        else f = false;
     }
-    return f;
+    return false;
 }
 
 void Game::Eating_Fruits() {
