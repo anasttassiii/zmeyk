@@ -1,8 +1,16 @@
 ﻿#pragma once
 #include <iostream>
 #include <ctime>
+#include <vector>
 
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
+
+class IGame {
+public:
+    virtual void Draw() = 0; // Чисто виртуальная функция
+    virtual void Logic() = 0; // Чисто виртуальная функция
+    virtual ~IGame() {}
+};
 
 class Score {
 private:
@@ -32,7 +40,7 @@ public:
     }
 };
 
-class Game : public Snake {
+class Game : public IGame, public Snake {
 public:
     eDirection dir;
     Score score;
@@ -53,23 +61,21 @@ public:
         score = Score(); // Инициализация объекта Score
     }
 
-    // Статический метод для получения количества игр
     static int getGameCount() {
         return gameCount;
     }
 
-    // Метод для получения текущего счета
-    int getScore() const { // Возвращает значение score из объекта score
+    int getScore() const {
         return score.getScore();
     }
 
-    void Draw(); // Рисуем поле
+    virtual void Draw() override; // Рисуем поле
     void Input(); // Получаем входные данные
-    void Logic(); // Реализуем логику игры
+    virtual void Logic() override; // Реализуем логику игры
     void Draw_horizontal_borders(); // Рисуем горизонтальные стенки
     bool Draw_vertical_borders(int, int); // Рисуем вертикальные стенки
     bool Draw_head_of_snake(int, int); // Рисуем голову змейки
-    bool Draw_Fruite(int, int); // Рисуем фрукт
+    bool Draw_Fruit(int, int); // Рисуем фрукт
     void Draw_Snake_tail_or_space(int, int);
     void Tail_step();
     void Change_of_head_position();
@@ -77,4 +83,29 @@ public:
     void head_to_tail_check();
     void meeting_with_boorder();
     bool Check_Tail_and_Fruit_coincidence();
+};
+
+class AdvancedGame : public Game {
+private:
+    std::vector<int> history; // Хранит историю результатов игры
+
+public:
+    AdvancedGame() : Game() {} // Вызов конструктора базового класса
+
+    void SaveScore(int score) {
+        history.push_back(score);
+    }
+
+    void DisplayHistory() const {
+        std::cout << "Game History:" << std::endl;
+        for (auto score : history) {
+            std::cout << score << " ";
+        }
+        std::cout << std::endl;
+    }
+
+    void Draw() override {
+        Game::Draw(); // Вызов метода базового класса
+        DisplayHistory(); // Дополнительная функция отображения результатов
+    }
 };

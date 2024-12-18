@@ -4,15 +4,11 @@
 #include <vector>
 #include <windows.h>
 #include <conio.h>
-#include <string> 
+#include <string>
+
 using namespace std;
 
 int Game::gameCount = 0;
-
-std::ostream& operator<<(std::ostream& os, const Game& game) {
-    os << "Score: " << game.getScore() << endl; // Изменено с getScorePointer на getScore
-    return os;
-}
 
 void Game::Draw_horizontal_borders() {
     for (int i = 0; i < width + 1; i++) {
@@ -37,14 +33,13 @@ bool Game::Draw_head_of_snake(int y_coordinate, int x_coordinate) {
     return false;
 }
 
-bool Game::Draw_Fruite(int y_coordinate, int x_coordinate) {
+bool Game::Draw_Fruit(int y_coordinate, int x_coordinate) {
     if (y_coordinate == fruitY && x_coordinate == fruitX) {
         cout << "F"; // Фрукт
         return true;
     }
     return false;
 }
-
 
 void Game::Draw_Snake_tail_or_space(int y_coordinate, int x_coordinate) {
     bool print = false;
@@ -64,7 +59,7 @@ void Game::Draw() {
         for (int j = 0; j < width; j++) {
             if (!Draw_vertical_borders(i, j)) {
                 if (!Draw_head_of_snake(i, j)) {
-                    if (!Draw_Fruite(i, j)) {
+                    if (!Draw_Fruit(i, j)) {
                         Draw_Snake_tail_or_space(i, j);
                     }
                 }
@@ -73,7 +68,7 @@ void Game::Draw() {
         cout << endl;
     }
     Draw_horizontal_borders();
-    cout << "Score: " << getScore() << endl; // Изменено с getScorePointer на getScore
+    cout << "Score: " << getScore() << endl;
 }
 
 void Game::Input() {
