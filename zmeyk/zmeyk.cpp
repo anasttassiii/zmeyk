@@ -8,7 +8,7 @@ using namespace std;
 
 int main() {
     vector<AdvancedGame> games;
-    int numGames = 1; // Измените это, чтобы запустить больше игр
+    int numGames = 1; // Здесь можно изменить количество игр для запуска
 
     for (int i = 0; i < numGames; i++) {
         AdvancedGame game;
@@ -18,8 +18,6 @@ int main() {
             games[i].Draw();
             games[i].Input();
             games[i].Logic();
-            // Обновляем историю в реальном времени
-            games[i].SaveScore(games[i].getScore()); // Сохраняем счет, только если он изменился
             Sleep(100); // Задержка 100 мс
         }
 

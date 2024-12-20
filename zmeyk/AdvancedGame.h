@@ -1,41 +1,35 @@
 #pragma once
-#include <vector>
 #include "snake.h"
+#include "History.h"
 
 using namespace std;
 
 class AdvancedGame : public Game {
 private:
-    std::vector<int> history; // История очков
-    int lastScore; // Для хранения последнего добавленного счета
-public:
-    AdvancedGame() : Game(), lastScore(0) {} // Вызов конструктора базового класса
+    History<int> history; // Используем шаблонный класс для хранения истории
 
-    void SaveScore(int score) {
-        if (score != lastScore) { // Сохраняем только если счет изменился
-            history.push_back(score);
-            lastScore = score; // Обновляем последний сохраненный счет
+public:
+    AdvancedGame() : Game() {} // Вызов конструктора базового класса
+
+    // Оператор присваивания
+    AdvancedGame& operator=(const AdvancedGame& other) {
+        if (this != &other) {
+            Game::operator=(other); // Сначала вызываем оператор присваивания базового класса
+            history = other.history; // Копируем историю
         }
+        return *this;
     }
 
-    void DisplayHistory() const {
-        cout << "Game History:";
-        if (history.empty()) {
-            cout << " No scores yet.";
-        }
-        for (auto score : history) {
-            cout << " " << score; // Отображение истории очков
-        }
-        cout << endl;
+    void SaveScore(int score) {
+        history.addScore(score); // Сохраняем текущий счет
     }
 
     void Draw() override {
         Game::Draw(); // Вызов метода базового класса
-        DisplayHistory(); // Отображение истории очков
+        history.display(); // Отображение истории очков
     }
 
     void ResetHistory() {
         history.clear(); // Очищаем историю для новой игры
-        lastScore = 0; // Сбрасываем последний сохраненный счет
     }
 };

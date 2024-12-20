@@ -23,27 +23,23 @@ public:
 
 class Snake {
 protected:
-    int width;
-    int height;
+    int width, height, nTail; // Теперь nTail защищен
     int tailX[100], tailY[100]; // В массивах хранятся координаты хвоста змейки
-    int nTail;
 public:
-    Snake() {
-        this->width = 20;
-        this->height = 15;
-        nTail = 0;
-    }
+    Snake() : width(20), height(15), nTail(0) {} // Конструктор
 };
 
 class Game : public IGame, public Snake {
-public:
+public:bool gameover; // Завершение игры
+protected: // Изменён доступ
     eDirection dir;
     Score score;
-    bool gameover; // Завершение игры
+    
     int xHead, yHead, fruitX, fruitY; // Координаты головы змейки, положения фрукта
     static int gameCount;
 
-    Game() : Snake() {
+public:
+    Game() : Snake() { // Вызов конструктора базового класса
         srand(static_cast<unsigned int>(time(NULL)));
         gameCount++;
         gameover = false;
@@ -55,12 +51,13 @@ public:
         score = Score(); // Инициализация объекта Score
     }
 
+    // Виртуальные методы
+    virtual void Draw() override;
+    void Input();
+    virtual void Logic() override;
+
     static int getGameCount() { return gameCount; }
     int getScore() const { return score.getScore(); }
-
-    virtual void Draw() override; // Рисуем поле
-    void Input(); // Получаем входные данные
-    virtual void Logic() override; // Реализуем логику игры
 
     void Draw_horizontal_borders(); // Рисуем горизонтальные стенки
     bool Draw_vertical_borders(int, int); // Рисуем вертикальные стенки

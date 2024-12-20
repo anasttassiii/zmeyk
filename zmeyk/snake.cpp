@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <windows.h>
 #include <conio.h>
+#include "AdvancedGame.h"
 
 using namespace std;
 
@@ -67,7 +68,7 @@ void Game::Draw() {
         cout << endl;
     }
     Draw_horizontal_borders();
-    cout << "Score: " << getScore() << endl;
+    cout << "Score: " << getScore() << endl; // Выводим текущий счет
 }
 
 void Game::Input() {
@@ -108,15 +109,15 @@ void Game::Change_of_head_position() {
 }
 
 void Game::meeting_with_boorder() {
-    if (xHead >= width - 1) xHead = 0; // Проходит через правую стенку
-    else if (xHead < 0) xHead = width - 2; // Проходит через левую стенку
-    if (yHead >= height) yHead = 0; // Проходит через нижнюю стенку
-    else if (yHead < 0) yHead = height - 1; // Проходит через верхнюю стенку
+    if (xHead >= width - 1) xHead = 0;
+    else if (xHead < 0) xHead = width - 2;
+    if (yHead >= height) yHead = 0;
+    else if (yHead < 0) yHead = height - 1;
 }
 
 void Game::head_to_tail_check() {
     for (int i = 0; i < nTail; i++) {
-        if (tailX[i] == xHead && tailY[i] == yHead) gameover = true; // Проверка на столкновение с хвостом
+        if (tailX[i] == xHead && tailY[i] == yHead) gameover = true;
     }
 }
 
@@ -131,7 +132,9 @@ bool Game::Check_Tail_and_Fruit_coincidence() {
 
 void Game::Eating_Fruits() {
     if (xHead == fruitX && yHead == fruitY) {
-        score.addScore(10);
+        score.addScore(10); // Увеличиваем счет на 10
+        // Сохраняем текущий счет в истории через AdvancedGame
+        static_cast<AdvancedGame*>(this)->SaveScore(score.getScore());
         fruitX = rand() % (width - 1);
         fruitY = rand() % height;
         if (nTail > 0)
