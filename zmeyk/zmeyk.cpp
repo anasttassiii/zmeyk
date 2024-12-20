@@ -1,37 +1,32 @@
 ﻿#include <iostream>
 #include <vector>
-#include <algorithm> // Для std::sort и std::binary_search
 #include "snake.h"
-#include <ctime>
+#include "AdvancedGame.h"
 #include <windows.h>
-#include <conio.h>
 
 using namespace std;
 
 int main() {
-    vector<AdvancedGame> games(100); // Массив объектов AdvancedGame
-    vector<int> scores; // Вектор для хранения результатов
+    vector<AdvancedGame> games;
+    int numGames = 1; // Измените это, чтобы запустить больше игр
 
-    for (int i = 0; i < 100; i++) {
-        games[i] = AdvancedGame(); // Инициализация объекта AdvancedGame
-        while (!games[i].gameover && !games[i].gameset) {
+    for (int i = 0; i < numGames; i++) {
+        AdvancedGame game;
+        games.push_back(game);
+
+        while (!games[i].gameover) {
             games[i].Draw();
             games[i].Input();
             games[i].Logic();
-            Sleep(300); // Задержка 300 миллисекунд
+            // Обновляем историю в реальном времени
+            games[i].SaveScore(games[i].getScore()); // Сохраняем счет, только если он изменился
+            Sleep(100); // Задержка 100 мс
         }
-        cout << "Game Over for game " << (i + 1) << "! Your score: " << games[i].getScore() << endl;
-        games[i].SaveScore(games[i].getScore()); // Сохраняем результат
-        Sleep(2500);
-        if (games[i].gameset == true) break;
+
+        cout << "Game Over! Your score: " << games[i].getScore() << endl;
+        games[i].ResetHistory(); // Очищение истории для новой игры
     }
 
-    // Вывод сохранённых результатов
-    cout << "Game History:" << endl;
-    for (const auto& game : games) {
-        game.DisplayHistory();
-    }
-
-    cout << "Total number of games created: " << Game::getGameCount()-100 << endl; // Статическое использование
+    cout << "Total number of games created: " << Game::getGameCount() << endl; // Статическое использование
     return 0;
 }

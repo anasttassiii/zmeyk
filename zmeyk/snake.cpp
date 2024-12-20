@@ -1,10 +1,8 @@
-#include <iostream>
 #include "snake.h"
-#include <ctime>
-#include <vector>
+#include <iostream>
+#include <cstdlib>
 #include <windows.h>
 #include <conio.h>
-#include <string>
 
 using namespace std;
 
@@ -27,7 +25,7 @@ bool Game::Draw_vertical_borders(int y_coordinate, int x_coordinate) {
 
 bool Game::Draw_head_of_snake(int y_coordinate, int x_coordinate) {
     if (y_coordinate == yHead && x_coordinate == xHead) {
-        cout << "0"; // Голова змеи
+        cout << "O"; // Голова змеи
         return true;
     }
     return false;
@@ -49,7 +47,8 @@ void Game::Draw_Snake_tail_or_space(int y_coordinate, int x_coordinate) {
             cout << "o"; // Тело змеи
         }
     }
-    if (!print) cout << ' '; // Пустое пространство
+    if (!print)
+        cout << ' '; // Пустое пространство
 }
 
 void Game::Draw() {
@@ -78,28 +77,7 @@ void Game::Input() {
         case 'd': dir = RIGHT; break;
         case 'w': dir = UP; break;
         case 's': dir = DOWN; break;
-        case 'l': {
-            cout << "Choose difficulty (1- easy, 2- hard): ";
-            string level;
-            getline(cin >> ws, level);
-            try {
-                if (level == "1") {
-                    cout << "Difficulty set to easy." << endl;
-                }
-                else if (level == "2") {
-                    cout << "Difficulty set to hard." << endl;
-                }
-                else {
-                    throw invalid_argument("Invalid choice. Default difficulty applied.");
-                }
-            }
-            catch (const invalid_argument& e) {
-                cout << e.what() << endl;
-            }
-            break;
-        }
-        case 'x': gameover = true; break;
-        case 'e': gameset = true; break;
+        case 'x': gameover = true; break; // Завершение игры
         }
     }
 }
@@ -130,15 +108,15 @@ void Game::Change_of_head_position() {
 }
 
 void Game::meeting_with_boorder() {
-    if (xHead >= width - 1) xHead = 0;
-    else if (xHead < 0) xHead = width - 2;
-    if (yHead >= height) yHead = 0;
-    else if (yHead < 0) yHead = height - 1;
+    if (xHead >= width - 1) xHead = 0; // Проходит через правую стенку
+    else if (xHead < 0) xHead = width - 2; // Проходит через левую стенку
+    if (yHead >= height) yHead = 0; // Проходит через нижнюю стенку
+    else if (yHead < 0) yHead = height - 1; // Проходит через верхнюю стенку
 }
 
 void Game::head_to_tail_check() {
     for (int i = 0; i < nTail; i++) {
-        if (tailX[i] == xHead && tailY[i] == yHead) gameover = true;
+        if (tailX[i] == xHead && tailY[i] == yHead) gameover = true; // Проверка на столкновение с хвостом
     }
 }
 
@@ -156,7 +134,8 @@ void Game::Eating_Fruits() {
         score.addScore(10);
         fruitX = rand() % (width - 1);
         fruitY = rand() % height;
-        if (nTail > 0) while (Check_Tail_and_Fruit_coincidence());
+        if (nTail > 0)
+            while (Check_Tail_and_Fruit_coincidence());
         nTail++;
     }
 }

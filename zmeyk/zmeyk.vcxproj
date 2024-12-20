@@ -143,6 +143,8 @@
     <ClCompile Include="zmeyk.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AdvancedGame.h" />
+    <ClInclude Include="Header.h" />
     <ClInclude Include="snake.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
